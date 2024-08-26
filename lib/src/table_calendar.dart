@@ -204,6 +204,9 @@ class TableCalendar<T> extends StatefulWidget {
   /// Called when the calendar is created. Exposes its PageController.
   final void Function(PageController pageController)? onCalendarCreated;
 
+  /// Whether to animate calendar size changes.
+  final bool animateSize;
+
   /// Creates a `TableCalendar` widget.
   TableCalendar({
     Key? key,
@@ -260,6 +263,7 @@ class TableCalendar<T> extends StatefulWidget {
     this.onPageChanged,
     this.onFormatChanged,
     this.onCalendarCreated,
+    this.animateSize = true,
   })  : assert(availableCalendarFormats.keys.contains(calendarFormat)),
         assert(availableCalendarFormats.length <= CalendarFormat.values.length),
         assert(weekendDays.isNotEmpty
@@ -563,6 +567,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
                 child: _buildCell(day, focusedMonth),
               );
             },
+            animatedSize: widget.animateSize,
           ),
         ),
       ],

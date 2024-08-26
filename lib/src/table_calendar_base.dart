@@ -34,6 +34,7 @@ class TableCalendarBase extends StatefulWidget {
   final SimpleSwipeConfig simpleSwipeConfig;
   final Map<CalendarFormat, String> availableCalendarFormats;
   final SwipeCallback? onVerticalSwipe;
+  final bool animatedSize;
   final void Function(DateTime focusedDay)? onPageChanged;
   final void Function(PageController pageController)? onCalendarCreated;
 
@@ -74,6 +75,7 @@ class TableCalendarBase extends StatefulWidget {
     this.onVerticalSwipe,
     this.onPageChanged,
     this.onCalendarCreated,
+    this.animatedSize = true,
   })  : assert(!dowVisible || (dowHeight != null && dowBuilder != null)),
         assert(isSameDay(focusedDay, firstDay) || focusedDay.isAfter(firstDay)),
         assert(isSameDay(focusedDay, lastDay) || focusedDay.isBefore(lastDay)),
@@ -194,16 +196,19 @@ class _TableCalendarBaseState extends State<TableCalendarBase> {
             builder: (context, value, child) {
               final height =
                   constraints.hasBoundedHeight ? constraints.maxHeight : value;
-
-              return AnimatedSize(
-                duration: widget.formatAnimationDuration,
-                curve: widget.formatAnimationCurve,
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  height: height,
-                  child: child,
-                ),
+              Widget _child = SizedBox(
+                height: height,
+                child: child,
               );
+              if (widget.animatedSize) {
+                _child = AnimatedSize(
+                  duration: widget.formatAnimationDuration,
+                  curve: widget.formatAnimationCurve,
+                  alignment: Alignment.topCenter,
+                  child: _child,
+                );
+              }
+              return _child;
             },
             child: CalendarCore(
               constraints: constraints,
